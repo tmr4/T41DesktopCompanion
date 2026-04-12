@@ -2,18 +2,13 @@
 
 #define VERSION "vAP_dev.1"
 
-//#define PROFILER_ACTIVE
+#define PROFILER_ACTIVE
 
 #define MASTER_CLK_MULT 4ULL // FOURSQRP QSD frontend requires 4x clock
 
 // pick one of the following display configurations
 #define DISPLAY_LANDSCAPE
 //#define DISPLAY_FLIPPED
-
-#define PROJECTSYSTEM_VOLUME_ENCODER
-#define PROJECTSYSTEM_FILTER_ENCODER
-#define PROJECTSYSTEM_FINETUNE_ENCODER
-#define PROJECTSYSTEM_TUNE_ENCODER
 
 #define VOLUME_REVERSED false
 #define FILTER_REVERSED false

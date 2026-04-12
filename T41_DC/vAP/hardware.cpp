@@ -26,17 +26,9 @@
 // Data
 //-------------------------------------------------------------------------------------------------------------
 
-#ifdef PROJECTSYSTEM_VOLUME_ENCODER
 extern Bounce encoderSwitch;
-#endif
-#ifdef PROJECTSYSTEM_FILTER_ENCODER
 extern Bounce encoder2Switch;
-static bool menuDone = false;
-#endif
-#ifdef PROJECTSYSTEM_FINETUNE_ENCODER
-#endif
-#ifdef PROJECTSYSTEM_TUNE_ENCODER
-#endif
+//static bool menuDone = false;
 
 //------------
 // Process.h
@@ -65,8 +57,6 @@ void InitFrontPanel();
 // Code
 //-------------------------------------------------------------------------------------------------------------
 
-#if defined(PROJECTSYSTEM_VOLUME_ENCODER) || defined(PROJECTSYSTEM_FILTER_ENCODER)
-
 //------------
 // Button.cpp
 
@@ -80,22 +70,12 @@ void InitFrontPanel();
     int                   -1 if not valid push button, ADC value if valid
 *****/
 int ReadSelectedPushButton() {
-#ifdef PROJECTSYSTEM_FILTER_ENCODER
-  if(menuDone) {
-    return 0;
-  } else {
-    return -1;
-  }
-#endif
-#ifdef PROJECTSYSTEM_VOLUME_ENCODER
   return -1;
-#endif
 }
 
 int ProcessButtonPress(int valPin) {
   return 0;
 }
-#endif
 
 //------------
 // Encoders.cpp
@@ -201,12 +181,7 @@ void InitHardware() {
 
   pinMode(BUSY_ANALOG_PIN, INPUT);
 
-#if defined(PROJECTSYSTEM_VOLUME_ENCODER) || defined(PROJECTSYSTEM_FILTER_ENCODER)
   EncodersInit();
-#endif
-#ifdef PROJECTSYSTEM_ENCODER_MCP
-  InitFrontPanel();
-#endif
 }
 
 void SoftResetHardware() {
@@ -247,35 +222,4 @@ void ConfigRadioStateHardware() {
 }
 
 void HardwareLoopStart() {
-#ifdef PROJECTSYSTEM_VOLUME_ENCODER
-  // poll encoder switch
-  if(encoderSwitch.update() && encoderSwitch.fallingEdge()) {
-    // load wave file and begin decoding internally if successful
-    ExecuteButtonPress(16);
-  }
-#endif
-#ifdef PROJECTSYSTEM_FILTER_ENCODER
-  // menu testing
-  static bool menuActive = false;
-  static int count = 0;
-
-  // poll encoder switch
-  if(encoder2Switch.update() && encoder2Switch.fallingEdge()) {
-    if(!menuActive) {
-      // show menu
-      ShowMenuBar(0, 1);
-      menuActive = true;
-      //ExecuteButtonPress(1);
-    } else {
-      // select menu item
-      if(count++ < 3) {
-        MenuBarSelect();
-      } else {
-        menuDone = true;
-        menuActive = false;
-        count = 0;
-      }
-    }
-  }
-#endif
 }

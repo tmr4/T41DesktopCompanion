@@ -26,62 +26,46 @@
 // Conflicts with normal T41 pin assignments can cause operational
 // problems.
 
-// Project System free Teensy w/ Audio board pins:
+// Audio Platform free Teensy w/ Audio board pins:
 // Notes:
-//  pin 2 is touchscreen interrupt (this seems hardwired, thus a touch pulls this pin low))
-//  pins 6,10-13 are associated with Audio board SD card and memory chip and aren't available if these are used
-// (Teensy sides as Project System display is to right)
-// Left side: 13-17,22,33-38,40,41
-// Right side: 0,1,3,4,10-12,24,25,28-31
+// Audio Platform comes with hardwired display, encoders, midi, flash
+// (Teensy sides w/ Audio Platform upright)
+// These are the Audio Platform GPIO pins
+// Left side: 14-17,22,40,41
+// Right side: 10,28,29,32
 
-// free project system pins after assignments below:
-// *** unused T41 inputs assigned to pin 13 ***
-// *** unused T41 outputs assigned to pin 15 ***
-// Left side: (13),(15),17
-// Right side: 28
+// free Audio Platform pins after assignments below:
+// *** unused T41 inputs assigned to pin 28 ***
+// *** unused T41 outputs assigned to pin 22 ***
+// Left side: (22)
+// Right side: (28)
 
 // *** Input Pins ***
-#ifdef PROJECTSYSTEM_VOLUME_ENCODER
+// Audio Platform encoders 1-4, left to right: volume, filter, fine tune, center tune
 #define VOLUME_ENCODER_A         3
 #define VOLUME_ENCODER_B         4
 #define VOLUME_SWITCH           24
-#endif
-#ifdef PROJECTSYSTEM_FILTER_ENCODER
 #define FILTER_ENCODER_A        25  // these are wired in reverse on PS
 #define FILTER_ENCODER_B        30
 #define FILTER_SWITCH           31
-#endif
-#ifdef PROJECTSYSTEM_FINETUNE_ENCODER
 #define FINETUNE_ENCODER_A      33  // these are wired in reverse on PS
 #define FINETUNE_ENCODER_B      34
 #define FINETUNE_SWITCH         35
-#endif
-#ifdef PROJECTSYSTEM_TUNE_ENCODER
 #define TUNE_ENCODER_A          36
 #define TUNE_ENCODER_B          37
 #define TUNE_SWITCH             38
-#endif
 
-#define PTT                     29    // TX input
-#define KEYER_DAH_INPUT_RING    17    // Ring connection for keyer  -- default for righthanded user
-#define KEYER_DIT_INPUT_TIP     14    // Tip connection for keyer
-#define BUSY_ANALOG_PIN         28    // pin 39 is TFT_MISO on Project System (the pin assigned here is only meaningful when testing switch matrix on non-front panel systems)
-
-// *** conflicts here! ***
-// *** these need reassigned when using the MCP expander ***
-#ifdef PROJECTSYSTEM_EXPANDED_IO_40
-#define INT_PIN_2 40
-#endif
-#ifdef PROJECTSYSTEM_EXPANDED_IO_41
-#define INT_PIN_1 41
-#endif
+#define PTT                     28    // TX input
+#define KEYER_DAH_INPUT_RING    28    // Ring connection for keyer  -- default for righthanded user
+#define KEYER_DIT_INPUT_TIP     28    // Tip connection for keyer
+#define BUSY_ANALOG_PIN         17    // must be different than other inputs *** TODO: why? ***
 
 // *** Output Pins ***
 
-#define RXTX         10    // TX/RX relay
-#define MUTE         40    // Mute Audio,  HIGH = "On" Audio available from Audio PA, LOW = Mute audio
+#define RXTX         22    // TX/RX relay
+#define MUTE         22    // Mute Audio,  HIGH = "On" Audio available from Audio PA, LOW = Mute audio
 
-// the Project System uses an RA8875 display
+// the Audio Platform uses an RA8875 display
 #define TFT_DC                  9
 #define TFT_CS                  5
 #define TFT_MOSI                26
@@ -90,53 +74,28 @@
 #define TFT_RST                 255
 
 // Filter Board pins
-#define FILTERPIN80M            16    // 80M filter relay
-#define FILTERPIN40M            16    // 40M filter relay
-#define FILTERPIN20M            16    // 20M filter relay
-#define FILTERPIN15M            16    // 15M filter relay
+#define FILTERPIN80M            22    // 80M filter relay
+#define FILTERPIN40M            22    // 40M filter relay
+#define FILTERPIN20M            22    // 20M filter relay
+#define FILTERPIN15M            22    // 15M filter relay
 
-#define PROFILER_MAINLOOP_PIN         15
-#define PROFILER_PROCESS_PIN          15
-#define PROFILER_DRAWFREQSPEC_PIN     15
-#define PROFILER_DRAWAUDIOSPEC_PIN    15
-#define PROFILER_FT8PROCESSBLOCK_PIN  15
-#define PROFILER_FT8GETDATA_PIN       15
-#define PROFILER_FT8DECODE_PIN        15
-#define PROFILER_FT8_TX_PIN           15
-
-// other
-
-#ifdef PROJECTSYSTEM_ENCODER_1
-#define ENCODER_1_SWITCH
-#endif
-#ifdef PROJECTSYSTEM_ENCODER_2
-#define ENCODER_2_SWITCH
-#endif
-#ifdef PROJECTSYSTEM_ENCODER_3
-#define ENCODER_3_SWITCH
-#endif
-#ifdef PROJECTSYSTEM_ENCODER_4
-#define ENCODER_4_SWITCH
-#endif
-
+// GPIO pins: even top, odd bottom, increasing right to left (normal Audio Platform orientation)
+#define PROFILER_MAINLOOP_PIN         10 // GPIO #1
+#define PROFILER_PROCESS_PIN          41 // GPIO #2
+#define PROFILER_DRAWFREQSPEC_PIN     14 // GPIO #3
+#define PROFILER_DRAWAUDIOSPEC_PIN    40 // GPIO #4
+#define PROFILER_FT8PROCESSBLOCK_PIN  15 // GPIO #5
+#define PROFILER_FT8GETDATA_PIN       32 // GPIO #6
+#define PROFILER_FT8DECODE_PIN        16 // GPIO #7
+#define PROFILER_FT8_TX_PIN           29 // GPIO #8
 
 //---- end of Teensy 4.1 Pin assignments
 
-#ifdef PROJECTSYSTEM_VOLUME_ENCODER
 #include <Rotary.h>                    // https://github.com/brianlow/Rotary
 
 extern Rotary volumeEncoder;
-#endif
-#ifdef PROJECTSYSTEM_FILTER_ENCODER
-#include <Rotary.h>                    // https://github.com/brianlow/Rotary
-
 extern Rotary menuChangeEncoder;
-#endif
-#ifdef PROJECTSYSTEM_FINETUNE_ENCODER
-//#include <Rotary.h>                    // https://github.com/brianlow/Rotary
-
 extern Rotary fineTuneEncoder;
-#endif
 
 //------------
 // Menu.cpp
@@ -191,25 +150,8 @@ void HardwareLoopStart();
 //------------
 // Encoders.h
 
-#ifdef PROJECTSYSTEM_VOLUME_ENCODER
 void EncodersInit();
 void EncoderVolumeISR();
-#endif
-
-#ifdef PROJECTSYSTEM_FILTER_ENCODER
-void EncodersInit();
 void EncoderMenuChangeFilterISR();
-#endif
-
-#ifdef PROJECTSYSTEM_FINETUNE_ENCODER
-void EncodersInit();
 void EncoderFineTuneISR();
-#endif
-
-#ifdef PROJECTSYSTEM_TUNE_ENCODER
-void EncodersInit();
 bool EncoderCenterTune();
-#endif
-
-#ifdef PROJECTSYSTEM_ENCODER_MCP
-#endif

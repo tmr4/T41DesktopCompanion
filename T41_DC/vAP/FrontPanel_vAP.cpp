@@ -5,8 +5,6 @@
 #include "..\Encoders.h"
 #include "FrontPanel.h"
 
-#if !defined(PROJECTSYSTEM_ENCODER_MCP)
-
 // v11 type encoders and switches
 #include <Bounce.h>
 
@@ -18,22 +16,14 @@
 // Data
 //-------------------------------------------------------------------------------------------------------------
 
-#ifdef PROJECTSYSTEM_VOLUME_ENCODER
 Rotary volumeEncoder = Rotary(VOLUME_ENCODER_A, VOLUME_ENCODER_B);        // ( 2,  3)
 Bounce encoderSwitch = Bounce(VOLUME_SWITCH, 10);  // 10 ms debounce
-#endif
-#ifdef PROJECTSYSTEM_FILTER_ENCODER
 Rotary menuChangeEncoder = Rotary(FILTER_ENCODER_A, FILTER_ENCODER_B);        // ( 2,  3)
 Bounce encoder2Switch = Bounce(FILTER_SWITCH, 10);  // 10 ms debounce
-#endif
-#ifdef PROJECTSYSTEM_FINETUNE_ENCODER
 Rotary fineTuneEncoder = Rotary(FINETUNE_ENCODER_A, FINETUNE_ENCODER_B);  // ( 4,  5)
 Bounce encoder3Switch = Bounce(FINETUNE_SWITCH, 10);  // 10 ms debounce
-#endif
-#ifdef PROJECTSYSTEM_TUNE_ENCODER
 Rotary tuneEncoder = Rotary(TUNE_ENCODER_A, TUNE_ENCODER_B);              // (16, 17)
 Bounce encoder4Switch = Bounce(TUNE_SWITCH, 10);  // 10 ms debounce
-#endif
 
 //-------------------------------------------------------------------------------------------------------------
 // Forwards
@@ -48,18 +38,13 @@ void EncoderVolumeISR();
 //-------------------------------------------------------------------------------------------------------------
 
 // set up encoders
-//#ifdef PROJECTSYSTEM_TUNE_ENCODER
-#if defined(PROJECTSYSTEM_VOLUME_ENCODER) || defined(PROJECTSYSTEM_FILTER_ENCODER) || defined(PROJECTSYSTEM_FINETUNE_ENCODER) || defined(PROJECTSYSTEM_FILTER_ENCODER)
 void EncodersInit() {
-#ifdef PROJECTSYSTEM_VOLUME_ENCODER
   volumeEncoder.begin(true);
   attachInterrupt(digitalPinToInterrupt(VOLUME_ENCODER_A), EncoderVolumeISR, CHANGE);
   attachInterrupt(digitalPinToInterrupt(VOLUME_ENCODER_B), EncoderVolumeISR, CHANGE);
 
   // set up encoder switch debounce
   pinMode(VOLUME_SWITCH, INPUT_PULLUP);
-#endif
-#ifdef PROJECTSYSTEM_FILTER_ENCODER
   pinMode(FILTER_ENCODER_A, INPUT);
   pinMode(FILTER_ENCODER_B, INPUT);
 
@@ -69,19 +54,12 @@ void EncodersInit() {
 
   // set up encoder switch debounce
   pinMode(FILTER_SWITCH, INPUT_PULLUP);
-#endif
-#ifdef PROJECTSYSTEM_FINETUNE_ENCODER
   fineTuneEncoder.begin(true);
   attachInterrupt(digitalPinToInterrupt(FINETUNE_ENCODER_A), EncoderFineTuneISR, CHANGE);
   attachInterrupt(digitalPinToInterrupt(FINETUNE_ENCODER_B), EncoderFineTuneISR, CHANGE);
-#endif
-#ifdef PROJECTSYSTEM_TUNE_ENCODER
   tuneEncoder.begin(true);
-#endif
 }
-#endif
 
-#ifdef PROJECTSYSTEM_VOLUME_ENCODER
 /*****
   Purpose: Encoder volume control ISR
 *****/
@@ -119,9 +97,7 @@ void EncoderVolumeISR() {
 
   volumeChangeFlag = true; // flag needed for display update
 }
-#endif
 
-#ifdef PROJECTSYSTEM_FILTER_ENCODER
 /*****
   Purpose: Menu/Change/Filter encoder movement ISR
 *****/
@@ -146,9 +122,7 @@ FASTRUN void EncoderMenuChangeFilterISR() {
 
   ProcessMenuEncoder();
 }
-#endif
 
-#ifdef PROJECTSYSTEM_FINETUNE_ENCODER
 /*****
   Purpose: Fine tune control ISR
 *****/
@@ -191,9 +165,7 @@ FASTRUN void EncoderFineTuneISR() {
 
   fineTuneEncoderMove = 0L;
 }
-#endif
 
-#ifdef PROJECTSYSTEM_TUNE_ENCODER
 /*****
   Purpose: Set center tune frequency based on
 *****/
@@ -224,12 +196,9 @@ bool EncoderCenterTune() {
   //   - receive calibrate adjusts noise floor
   //   - transmit calibrate adjusts image value
   //   - two tone adjusts tone 1
-  if((calibrateItem >= 1) && (calibrateItem <= 3)) return;
+  if((calibrateItem >= 1) && (calibrateItem <= 3)) return false;
 
   SetCenterTune((long)freqIncrement * tuneChange);
 
   return true;
 }
-#endif
-
-#endif

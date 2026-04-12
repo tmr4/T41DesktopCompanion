@@ -978,7 +978,8 @@ FASTRUN void ProcessControls() {
   #endif
   if(fineTuneFlag) {
     #if defined(HOST_CAT_CONTROL_SUPPORT) || defined(CAT_CONTROL_SUPPORT)
-    SendSetFineTune(TxRxFreq-NCOFreq);
+    //SendSetFineTune(TxRxFreq-NCOFreq);
+    SendSetFineTune();
     #endif
 
     if(updateDisplay) {
