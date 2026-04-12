@@ -652,8 +652,8 @@ FASTRUN void loop() {
   // *** need PC control without a display ***
   //T41ControlLoop();
 
-#ifndef HOST_CAT_CONTROL_SUPPORT
-  //T41ControlLoop();
+#ifndef CAT_CONTROL_SUPPORT
+  T41ControlLoop();
 #endif
 
 #ifdef DEBUG_LOOP
