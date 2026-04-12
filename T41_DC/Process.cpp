@@ -3,7 +3,6 @@
 
 #include "AudioConfig.h"
 #include "ButtonProc.h"
-#include "src\Calibrate.h"
 #include "CW_Excite.h"
 #include "CWProcessing.h"
 #include "Demod.h"
@@ -13,9 +12,8 @@
 #include "Exciter.h"
 #include "Filter.h"
 #include "FIR.h"
-#include "src\FrontPanel.h"
-
 #include "ft8.h"
+#include "hardware.h"
 #include "keyer.h"
 #include "Menu.h"
 #include "MenuProc.h"
@@ -930,7 +928,7 @@ FASTRUN void ProcessControls() {
     SendFilter();
     #endif
 
-    SetBWFilters();
+    ProcessFilterEncoder();
 
     if(updateDisplay) {
       switch(displayState) {
@@ -970,11 +968,11 @@ FASTRUN void ProcessControls() {
   // There may seem some duplication of display updates here, but these tuning events
   // shouldn't occur on the same loop so little efficiency to be gained by changing
   #if defined(HOST_CAT_CONTROL_SUPPORT) || defined(CAT_CONTROL_SUPPORT)
-  if(EncoderCenterTune()) {
+  if(ProcessCenterTuneEncoder(READ_CENTERTUNE_ENCODER)) {
     SendSetFreq(TxRxFreq);
   };
   #else
-  EncoderCenterTune();
+  ProcessCenterTuneEncoder(READ_CENTERTUNE_ENCODER);
   #endif
   if(fineTuneFlag) {
     #if defined(HOST_CAT_CONTROL_SUPPORT) || defined(CAT_CONTROL_SUPPORT)

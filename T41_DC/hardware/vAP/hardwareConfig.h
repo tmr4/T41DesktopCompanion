@@ -6,6 +6,9 @@
 
 #define MASTER_CLK_MULT 4ULL // FOURSQRP QSD frontend requires 4x clock
 
+// *** needs to be true if using center tune encoder on MCP23017
+#define READ_CENTERTUNE_ENCODER false // set to false if interrupt driven
+
 // pick one of the following display configurations
 #define DISPLAY_LANDSCAPE
 //#define DISPLAY_FLIPPED

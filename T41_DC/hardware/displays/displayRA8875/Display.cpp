@@ -14,6 +14,7 @@
 #include "..\..\Exciter.h"
 #include "..\..\Filter.h"
 #include "..\..\ft8.h"
+#include "..\..\hardware.h"
 #include "InfoBox.h"
 //#include "keyboard.h"
 #include "..\..\Menu.h"
@@ -284,6 +285,22 @@ FLASHMEM void ClearScreen() {
   tft.clearMemory();
   tft.writeTo(L1);
   tft.clearMemory();
+}
+
+FLASHMEM void ShowNoSD() {
+  int centerTxt;
+  const char line1Txt[] = "Error: waiting for SD card!";
+
+  ClearScreen();
+  tft.setFontScale(2);
+  tft.setTextColor(RA8875_RED);
+  centerTxt = (XPIXELS - strlen(line1Txt) * tft.getFontWidth()) / 2;
+  tft.setCursor(centerTxt, YPIXELS / 10);
+  tft.println(line1Txt);
+}
+
+FLASHMEM void ShowDot() {
+  tft.print(".");
 }
 
 // *** TODO: accomodate NULL pointers ***

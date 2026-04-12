@@ -29,6 +29,7 @@
 #include "Exciter.h"
 #include "Filter.h"
 #include "FIR.h"
+#include "hardware.h"
 #include "Menu.h"
 #include "Noise.h"
 #include "Process.h"
@@ -179,9 +180,7 @@ FLASHMEM void Splash() {
               This resets the user modifiable radio settings to the startup state
 *****/
 FLASHMEM void SoftReset() {
-  // can't use any working variables until after this, we can get rid of this when we use EEPROMData
-  // skip for now to facilitate testing/dev, don't need to reset when shifting between v66-9 and this version
-  //LoadOpVars();
+  LoadOpVarsFromEEPROM(LOAD_VARS_FROM_EEPROM);
 
   // reset sample rate and IF
   sampleRate = 192000.0;
@@ -258,12 +257,20 @@ FLASHMEM void setup() {
   // SD card is required for normal T41 operations
   // *** TODO: reconsider this ***
   //if(CheckDataFileEEPROM() == 0) { // *** requires SDEEPROMData.txt on SD card ***
-  if(InitializeSDCard() == 0) {
+  while(InitializeSDCard() == 0) {
     Debug("No SD card");
-    return;
-  } else {
-    sdCardPresent = 1;
+    //Serial.println("no sd");
+    ShowNoSD();
+    for(int i = 0; i < 10; i++) {
+      ShowDot();
+      delay(500L);
+    }
   }
+
+  //SaveAnalogSwitchValues();
+
+  ClearScreen();
+  sdCardPresent = 1;
   EEPROMStartup();
 
 #ifdef DEBUG
@@ -327,7 +334,6 @@ FLASHMEM void setup() {
   pinMode(PROFILER_FT8_TX_PIN, OUTPUT);
   digitalWrite(PROFILER_FT8_TX_PIN, LOW);
 #endif
-
 }
 
 #ifdef DEBUG
@@ -652,7 +658,7 @@ FASTRUN void loop() {
   // *** need PC control without a display ***
   //T41ControlLoop();
 
-#ifndef CAT_CONTROL_SUPPORT
+#ifdef CAT_CONTROL_SUPPORT
   T41ControlLoop();
 #endif
 

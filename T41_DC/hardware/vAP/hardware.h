@@ -155,3 +155,5 @@ void EncoderVolumeISR();
 void EncoderMenuChangeFilterISR();
 void EncoderFineTuneISR();
 bool EncoderCenterTune();
+
+inline void PollFrontPanel() {}

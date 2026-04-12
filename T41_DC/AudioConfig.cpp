@@ -207,25 +207,24 @@ void AudioSetup() {
   SetI2SFreq(sampleRate);
 
   // configure an SGTL5000 control object for input from the audio adapter microphone
-  //sgtl5000_1.setAddress(LOW); // Teensy pin 8
-  //sgtl5000_1.enable();
+  sgtl5000_1.setAddress(LOW); // Teensy pin 8
+  sgtl5000_1.enable();
 
   // about 26k increase in DMAMEM for each 100 block increase in audio memory
   AudioMemory(500);
   //AudioMemory(1000);  // about 130k increase in DMAMEM over 500
   //AudioMemory_F32(10);
-  //sgtl5000_1.inputSelect(AUDIO_INPUT_MIC);
-  ////sgtl5000_1.micGain(20);
-  //sgtl5000_1.micGain(10);
-  //sgtl5000_1.lineInLevel(0);
-  ////sgtl5000_1.lineOutLevel(20);
-  //sgtl5000_1.lineOutLevel(13);
-  //sgtl5000_1.adcHighPassFilterDisable();  //reduces noise.  https://forum.pjrc.com/threads/27215-24-bit-audio-boards?p=78831&viewfull=1#post78831
+  sgtl5000_1.inputSelect(AUDIO_INPUT_MIC);
+  //sgtl5000_1.micGain(20);
+  sgtl5000_1.micGain(10);
+  sgtl5000_1.lineInLevel(0);
+  //sgtl5000_1.lineOutLevel(20);
+  sgtl5000_1.lineOutLevel(13);
+  sgtl5000_1.adcHighPassFilterDisable();  //reduces noise.  https://forum.pjrc.com/threads/27215-24-bit-audio-boards?p=78831&viewfull=1#post78831
 
   // configure a second SGTL5000 control object for input from the Main board ADC
   // this is a PCM1808 not an SGTL5000 so any I2C related configuration functions aren't usable
-  //sgtl5000_2.setAddress(HIGH); // Teensy pin 6
-  sgtl5000_2.setAddress(LOW); // Teensy pin 6
+  sgtl5000_2.setAddress(HIGH); // Teensy pin 6
   sgtl5000_2.enable();
   sgtl5000_2.inputSelect(AUDIO_INPUT_LINEIN);
   sgtl5000_2.volume(0.5);

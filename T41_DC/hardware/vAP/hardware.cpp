@@ -1,4 +1,4 @@
-// vAP Audio Platform specific hardware source file
+// Audio Platform specific hardware source file
 
 #include <Bounce.h>
 
@@ -6,7 +6,6 @@
 
 #include "..\Button.h"
 #include "..\ButtonProc.h"
-#include "Calibrate.h"
 #include "..\CW_Excite.h"
 #include "..\CWProcessing.h"
 #include "..\Display.h"
@@ -20,15 +19,12 @@
 #include "..\Tune.h"
 #include "..\Utility.h"
 
-#include "FrontPanel.h"
-
 //-------------------------------------------------------------------------------------------------------------
 // Data
 //-------------------------------------------------------------------------------------------------------------
 
 extern Bounce encoderSwitch;
 extern Bounce encoder2Switch;
-//static bool menuDone = false;
 
 //------------
 // Process.h
@@ -50,8 +46,6 @@ extern long long oldCenterFreq;
 void RFPowerFollowup();
 void RFGainFollowup();
 void FT8DoXmitCalibrate();
-
-void InitFrontPanel();
 
 //-------------------------------------------------------------------------------------------------------------
 // Code

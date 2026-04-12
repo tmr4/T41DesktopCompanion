@@ -3,7 +3,6 @@
 #include "..\SDT.h"
 
 #include "..\Encoders.h"
-#include "FrontPanel.h"
 
 // v11 type encoders and switches
 #include <Bounce.h>
@@ -57,7 +56,10 @@ void EncodersInit() {
   fineTuneEncoder.begin(true);
   attachInterrupt(digitalPinToInterrupt(FINETUNE_ENCODER_A), EncoderFineTuneISR, CHANGE);
   attachInterrupt(digitalPinToInterrupt(FINETUNE_ENCODER_B), EncoderFineTuneISR, CHANGE);
+
   tuneEncoder.begin(true);
+  attachInterrupt(digitalPinToInterrupt(TUNE_ENCODER_A), EncoderCenterTuneISR, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(TUNE_ENCODER_B), EncoderCenterTuneISR, CHANGE);
 }
 
 /*****
@@ -167,19 +169,15 @@ FASTRUN void EncoderFineTuneISR() {
 }
 
 /*****
-  Purpose: Set center tune frequency based on
+  Purpose: handle center tune interrupt
+  sets tuneChange to be handled as radio proccesses controls
+  this makes tune change happen from known location
 *****/
-bool EncoderCenterTune() {
-  unsigned char result;
+void EncoderCenterTuneISR() {
+  unsigned char result = tuneEncoder.process();
 
-  result = tuneEncoder.process();  // Read the encoder
-
-  if(result == 0)  // Nothing read
-    return false;
-
-  if(radioMode == CW_MODE && decoderFlag == ON) {  // No reason to reset if we're not doing decoded CW
-    ResetHistograms();
-  }
+  if(result == 0)
+    return;
 
   switch(result) {
     case DIR_CW:  // Turned it clockwise, 16
@@ -190,15 +188,6 @@ bool EncoderCenterTune() {
       tuneChange = -1;
       break;
   }
-
-  // *** TODO: from v12, validate v11 calibration routines
-  // center tune used in calibration routines, return to process
-  //   - receive calibrate adjusts noise floor
-  //   - transmit calibrate adjusts image value
-  //   - two tone adjusts tone 1
-  if((calibrateItem >= 1) && (calibrateItem <= 3)) return false;
-
-  SetCenterTune((long)freqIncrement * tuneChange);
-
-  return true;
 }
+
+int ReadTuneEncoder() { return 0; }

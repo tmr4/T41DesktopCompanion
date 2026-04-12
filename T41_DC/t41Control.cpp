@@ -8,6 +8,7 @@
 #include "Encoders.h"
 #include "EEPROM.h"
 #include "Filter.h"
+#include "hardware.h"
 #include "keyboard.h"
 #include "MenuProc.h"
 #include "mouse.h"
@@ -206,7 +207,7 @@ void SendFilter() {
 void SendSetFineTune() {
   char cmd[20];
 
-  sprintf(cmd,"FF%011d;", NCOFreq-currentFreqA);
+  sprintf(cmd,"FF%011d;", NCOFreq-TxRxFreq);
   T41ControlSendCmd(cmd);
 }
 
@@ -518,7 +519,7 @@ void T41ControlLoop() {
           // inc/dec audio filter
 
           posFilterEncoder += atoi(&cmd[2]);
-          SetBWFilters();
+          ProcessFilterEncoder();
 
           CalcFilters();
           //updateDisplay = true;
