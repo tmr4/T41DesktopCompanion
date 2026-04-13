@@ -45,4 +45,6 @@ void SoftResetHardware() {
 }
 
 void ConfigRadioStateHardware() {}
-void HardwareLoopStart() { delay(10); } // *** TODO: some failures reprogramming Teensy with min hardware, check if this fixes issue ***
+void HardwareLoopStart() {
+   delay(10);
+} // *** TODO: some failures reprogramming Teensy with min hardware, check if this fixes issue ***
