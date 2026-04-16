@@ -86,15 +86,19 @@ AudioConnection_F32 patchCord6(comp2, 0, float2Int2, 0);
 AudioConnection patchCord7(float2Int1, 0, Q_in_L_Ex, 0);
 AudioConnection patchCord8(float2Int2, 0, Q_in_R_Ex, 0);
 #else
-AudioConnection pc_Q_in_L_Ex(i2s_quadIn, 0, Q_in_L_Ex, 0);
-AudioConnection pc_Q_in_R_Ex(i2s_quadIn, 1, Q_in_R_Ex, 0);
+//AudioConnection pc_Q_in_L_Ex(i2s_quadIn, 0, Q_in_L_Ex, 0);
+//AudioConnection pc_Q_in_R_Ex(i2s_quadIn, 1, Q_in_R_Ex, 0);
+AudioConnection pc_Q_in_L_Ex(i2s_quadIn, 2, Q_in_L_Ex, 0);
+AudioConnection pc_Q_in_R_Ex(i2s_quadIn, 3, Q_in_R_Ex, 0);
 #endif
 
 // Receive I/Q input (pin 6)
 AudioRecordQueue Q_in_L; // https://www.pjrc.com/teensy/gui/?info=AudioRecordQueue
 AudioRecordQueue Q_in_R;
-AudioConnection pc_Q_in_L(i2s_quadIn, 2, Q_in_L, 0);
-AudioConnection pc_Q_in_R(i2s_quadIn, 3, Q_in_R, 0);
+//AudioConnection pc_Q_in_L(i2s_quadIn, 2, Q_in_L, 0);
+//AudioConnection pc_Q_in_R(i2s_quadIn, 3, Q_in_R, 0);
+AudioConnection pc_Q_in_L(i2s_quadIn, 0, Q_in_L, 0);
+AudioConnection pc_Q_in_R(i2s_quadIn, 1, Q_in_R, 0);
 
 // Audio outputs
 AudioOutputI2SQuad i2s_quadOut; // configures pins 7 (Audio adapter line out on ch 1&2) and 32 (DAC on ch 3&4) as output. https://www.pjrc.com/teensy/gui/?info=AudioOutputI2SQuad
@@ -207,8 +211,9 @@ void AudioSetup() {
   SetI2SFreq(sampleRate);
 
   // configure an SGTL5000 control object for input from the audio adapter microphone
-  sgtl5000_1.setAddress(LOW); // Teensy pin 8
-  sgtl5000_1.enable();
+  //sgtl5000_1.setAddress(LOW); // Teensy pin 8
+  sgtl5000_1.setAddress(HIGH); // Teensy pin 6
+  //sgtl5000_1.enable();
 
   // about 26k increase in DMAMEM for each 100 block increase in audio memory
   AudioMemory(500);
@@ -224,7 +229,8 @@ void AudioSetup() {
 
   // configure a second SGTL5000 control object for input from the Main board ADC
   // this is a PCM1808 not an SGTL5000 so any I2C related configuration functions aren't usable
-  sgtl5000_2.setAddress(HIGH); // Teensy pin 6
+  //sgtl5000_2.setAddress(HIGH); // Teensy pin 6
+  sgtl5000_2.setAddress(LOW); // Teensy pin 8
   sgtl5000_2.enable();
   sgtl5000_2.inputSelect(AUDIO_INPUT_LINEIN);
   sgtl5000_2.volume(0.5);
